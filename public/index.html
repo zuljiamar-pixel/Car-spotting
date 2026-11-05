@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d12">
+  <meta name="description" content="Car Spotting mit KI: Foto machen, Auto erkennen lassen und deine Sammlung aufbauen.">
+  <title>Car Spotter</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 13l1.6-4.3A2 2 0 0 1 8.5 7.4h7a2 2 0 0 1 1.9 1.3L19 13m-14 0h14m-14 0v4.5h2V16h10v1.5h2V13M7.5 14.5h.01M16.5 14.5h.01"/></svg>
+      <span>Car<b>Spotter</b></span>
+    </div>
+    <button id="menu-btn" class="icon-btn" aria-label="Menü">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </header>
+
+  <main>
+    <!-- SCANNEN -->
+    <section id="view-scan" class="view active" aria-label="Scannen">
+      <div id="server-warning" class="banner" hidden></div>
+
+      <div id="scan-start">
+        <div class="hero">
+          <div class="hero-ring">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M7 14l1.1-3a1.5 1.5 0 0 1 1.4-1h5a1.5 1.5 0 0 1 1.4 1L17 14m-10 0h10m-10 0v2h1.5m8.5-2v2h-1.5"/></svg>
+          </div>
+          <h1>Auto entdeckt?</h1>
+          <p>Mach ein Foto – die KI erkennt Marke, Modell und liefert dir alle Daten.</p>
+        </div>
+
+        <label class="btn btn-primary btn-big">
+          <input type="file" accept="image/*" capture="environment" id="camera-input" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+          Foto aufnehmen
+        </label>
+        <label class="btn btn-ghost">
+          <input type="file" accept="image/*" id="gallery-input" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 15l4.5-4.5L13 15m-2-2l2.5-2.5L20 17"/><circle cx="15.5" cy="9" r="1.2"/></svg>
+          Aus Galerie wählen
+        </label>
+
+        <div id="mini-stats" class="mini-stats"></div>
+        <div id="recent" class="recent"></div>
+      </div>
+
+      <div id="scan-progress" hidden>
+        <div class="scan-frame">
+          <img id="scan-preview" alt="Dein Foto">
+          <div class="scanline"></div>
+          <div class="corners"></div>
+        </div>
+        <p class="scan-status"><span class="spinner"></span><span id="scan-status-text">KI analysiert das Auto …</span></p>
+      </div>
+
+      <div id="scan-result" hidden></div>
+    </section>
+
+    <!-- GARAGE -->
+    <section id="view-garage" class="view" aria-label="Garage">
+      <div class="view-head">
+        <h2>Garage</h2>
+        <span id="garage-count" class="muted"></span>
+      </div>
+      <div class="filters">
+        <input type="search" id="garage-search" placeholder="Suchen …" autocomplete="off">
+        <select id="garage-sort" aria-label="Sortierung">
+          <option value="new">Neueste</option>
+          <option value="rarity">Seltenste</option>
+          <option value="power">Meiste PS</option>
+          <option value="speed">Schnellste</option>
+          <option value="brand">Marke A–Z</option>
+        </select>
+      </div>
+      <div id="brand-filter"></div>
+      <div id="garage-grid" class="grid"></div>
+    </section>
+
+    <!-- MARKEN / STATISTIK -->
+    <section id="view-brands" class="view" aria-label="Marken">
+      <div class="view-head"><h2>Deine Statistik</h2></div>
+      <div id="stats-overview"></div>
+      <div class="view-head"><h3>Marken</h3><span id="brand-count" class="muted"></span></div>
+      <div id="brand-list"></div>
+      <div class="view-head"><h3>Erfolge</h3><span id="achievement-count" class="muted"></span></div>
+      <div id="achievements" class="achievements"></div>
+    </section>
+  </main>
+
+  <nav class="tabbar">
+    <button data-view="scan" class="active">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z"/><circle cx="12" cy="12.5" r="3.5"/></svg>
+      <span>Scannen</span>
+    </button>
+    <button data-view="garage">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20V9l9-5 9 5v11"/><path d="M7 20v-7h10v7M7 16h10"/></svg>
+      <span>Garage</span>
+    </button>
+    <button data-view="brands">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>
+      <span>Marken</span>
+    </button>
+  </nav>
+
+  <dialog id="spot-dialog" class="sheet">
+    <div class="sheet-head">
+      <button class="icon-btn" data-close aria-label="Schließen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div id="spot-dialog-body"></div>
+  </dialog>
+
+  <dialog id="menu-dialog" class="sheet">
+    <div class="sheet-head">
+      <h3>Einstellungen</h3>
+      <button class="icon-btn" data-close aria-label="Schließen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
+    </div>
+    <div class="menu-body">
+      <p class="muted">Deine Spots werden nur auf diesem Gerät gespeichert. Mach ab und zu ein Backup, damit nichts verloren geht.</p>
+      <button id="export-btn" class="btn btn-ghost">Backup herunterladen</button>
+      <label class="btn btn-ghost">
+        <input type="file" accept="application/json,.json" id="import-input" hidden>
+        Backup wiederherstellen
+      </label>
+      <button id="clear-btn" class="btn btn-danger">Alle Spots löschen</button>
+      <p id="model-info" class="muted small"></p>
+    </div>
+  </dialog>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
