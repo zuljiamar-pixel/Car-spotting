@@ -1,0 +1,17 @@
+# Ein-Klick-Deployment auf Render (https://render.com).
+# Beim Einrichten fragt Render nach deinem ANTHROPIC_API_KEY.
+services:
+  - type: web
+    name: car-spotter
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/status
+    envVars:
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: TRUST_PROXY
+        value: "1"
+      - key: NODE_VERSION
+        value: "22"

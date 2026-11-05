@@ -39,6 +39,18 @@ Wenn Handy und Computer im selben WLAN sind, öffnest du auf dem Handy `http://<
 
 ## Online stellen
 
+### Mit einem Klick (Render, kostenlos)
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/zuljiamar-pixel/Car-spotting)
+
+1. Klick auf den Button und melde dich bei Render mit GitHub an.
+2. Füg bei `ANTHROPIC_API_KEY` deinen API-Key ein.
+3. Klick auf **Apply** oder **Deploy**. Nach ein paar Minuten bekommst du einen Link wie `https://car-spotter-xxxx.onrender.com`, den jeder öffnen kann.
+
+Falls der Button nicht geht: Im Render-Dashboard **New + → Blueprint** wählen und dieses Repo auswählen. Die Einstellungen stehen in `render.yaml`.
+
+### Manuell
+
 Die App ist ein normaler Node.js-Server und läuft z. B. auf [Render](https://render.com), [Railway](https://railway.app) oder [Fly.io](https://fly.io):
 
 | Einstellung | Wert |
