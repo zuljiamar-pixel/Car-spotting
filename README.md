@@ -61,6 +61,32 @@ Die App ist ein normaler Node.js-Server und läuft z. B. auf [Render](https://re
 
 > ⚠️ Jeder Scan kostet ein paar Cent API-Guthaben. Damit niemand dein Guthaben leer scannt, ist pro IP-Adresse ein Limit eingebaut (Standard: 60 Scans pro Stunde, einstellbar über `RATE_LIMIT_PER_HOUR`). Setz dir außerdem in der Anthropic Console ein monatliches Ausgabenlimit.
 
+## 🛴 E-Scooter Spotter (eigene KI, ohne Server)
+
+Im Ordner `docs/` liegt eine zweite Website: **E-Scooter Spotter**. Sie braucht **keinen Server, kein Konto und keinen API-Key**. Die KI läuft direkt im Browser bzw. auf dem Handy.
+
+- **KI:** [MobileCLIP S0](https://huggingface.co/Xenova/mobileclip_s0) über [transformers.js](https://github.com/huggingface/transformers.js). Beim ersten Öffnen werden ca. 23 MB geladen, danach kommt alles aus dem Browser-Cache. Fotos werden nirgends hochgeladen.
+- **Erkennung:** Die KI vergleicht das Foto mit Beschreibungen von 31 E-Scooter-Modellen (Xiaomi, Segway-Ninebot, NIU, Dualtron, Kaabo, …, dazu die Leih-Scooter von Lime, Voi, Tier, Dott, Bird und Bolt) und mit echten Beispielfotos. Sie schlägt die wahrscheinlichsten Marken vor, und du tippst die richtige an.
+- **Genauigkeit (Test mit 38 echten Fotos):** „Ist das ein E-Scooter?“ war 38/38 richtig. Bei der Marke lag der KI-Tipp in 26 von 32 Fällen richtig und in 30 von 32 Fällen unter den ersten drei. Marken ohne Beispielfotos erkennt sie schlechter.
+- **Daten:** `docs/scooters.js`. Alle Werte sind ungefähre Herstellerangaben ohne Gewähr.
+- **Speicher:** Spots bleiben im Browser (IndexedDB) und können als Backup exportiert werden.
+
+### Online stellen (GitHub Pages, kostenlos)
+
+1. Auf GitHub im Repo **Settings → Pages** öffnen.
+2. Bei **Source** „Deploy from a branch“ wählen.
+3. Bei **Branch** `claude/car-spotting-ai-app-hhlqw4` und den Ordner **`/docs`** wählen und auf **Save** tippen.
+4. Nach 1–2 Minuten ist die Seite unter **https://zuljiamar-pixel.github.io/Car-spotting/** erreichbar.
+
+### KI-Daten neu berechnen
+
+`tools/build-embeddings.mjs` berechnet `docs/embeddings.json` aus den Texten in `docs/scooters.js` und aus Beispielfotos (Dateinamen wie `voi__1.jpg`; die Fotos liegen nicht im Repo):
+
+```bash
+npm install --no-save @huggingface/transformers@3.8.1
+node tools/build-embeddings.mjs docs <fotoordner>
+```
+
 ## Einstellungen (`.env`)
 
 | Variable | Standard | Bedeutung |

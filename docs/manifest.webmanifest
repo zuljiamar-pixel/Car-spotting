@@ -1,0 +1,11 @@
+{
+  "name": "E-Scooter Spotter",
+  "short_name": "Scooter Spotter",
+  "description": "E-Scooter spotten: Foto machen, die KI erkennt Marke und Modell.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#101214",
+  "theme_color": "#101214",
+  "lang": "de",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}
